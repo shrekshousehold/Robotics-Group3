@@ -16,7 +16,7 @@
 #define MOTOR_PIN3 6
 #define MOTOR_PIN4 9
 
-unsigned long colorSensorMillis = 0;      //Timer to track the last report of the color sensors
+unsigned long colorSensorMillis = 0;     //Timer to track the last report of the color sensors
 unsigned long irSensorMillis = 0;      //Timer to track the last report of the IR sensors
 
 void setup() {
