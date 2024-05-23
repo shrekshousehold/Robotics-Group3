@@ -1,5 +1,16 @@
 #include <tcs3200.h>
+
+// State Logic
 String currentState = "Null";
+String oldCurrentState = "Null";
+
+
+// Rurning Logic
+String turnDirectiob = "";        // Keep track of the current direction
+String lastTurnDirection = "";    // Store the last turn direction to decide the next turn if sharp uis detected
+bool isTurning = false;           // Flag to show if the robot is turning or not
+bool wallDetected = false;        // Flag to show if the robot has detcted a wall with the ultrasonic sensor
+
 
 #define IR_1 4
 #define IR_2 7

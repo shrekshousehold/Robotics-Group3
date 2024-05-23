@@ -1,9 +1,33 @@
+bool initialForwardMotion = false;                // Flag to initial forward at the start of a turn
+const unsigned long initialMotionDuration = 350;  // Duration for initial forward motion in milliseconds
+
+unsigned long turnStartTime = 0;                  // Time when the turn starts
+const unsigned long initialTurnDuration = 600;    // Duration for initial turn when wall detected before IR senor activates
+int turnSpeed = 150;
+
+const unsigned long sensorCheckThreshold = 50;  // Threshold in milliseconds to check both sensors
+
+unsigned long firstDetectionTime1 = 0;  // Time of first detection for sensor 1.
+unsigned long firstDetectionTime4 = 0;  // Time of first detection for sensor 4.
+
+
+
+
 void robotLogic()  {
+
+  // Process turning logic based on IR sensor
+  turnLogic();
 
   motorLogic();   // Process motor logic based on IR sensor values
 }
 
+void turnLogic() {
+
+
+}
+
 void motorLogic() {  // The logic to tell the motors how to operate
+
 
   int* IRvalues;
   IRvalues = readInfrared();  // Read the current state of the IR sensors
