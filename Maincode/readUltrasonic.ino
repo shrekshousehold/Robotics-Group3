@@ -1,4 +1,4 @@
-int readUltrasonicSensor()  {
+int readUltrasonicSensor() {
   digitalWrite(TRIG_PIN, LOW);
   delayMicroseconds(2);
   digitalWrite(TRIG_PIN, HIGH);

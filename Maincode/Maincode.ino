@@ -1,4 +1,6 @@
 #include <tcs3200.h>
+#include <WiFiNINA.h>
+
 
 // State Logic
 String currentState = "Null";
@@ -6,10 +8,10 @@ String oldCurrentState = "Null";
 
 
 // Rurning Logic
-String turnDirectiob = "";        // Keep track of the current direction
-String lastTurnDirection = "";    // Store the last turn direction to decide the next turn if sharp uis detected
-bool isTurning = false;           // Flag to show if the robot is turning or not
-bool wallDetected = false;        // Flag to show if the robot has detcted a wall with the ultrasonic sensor
+String turnDirection = "";      // Keep track of the current direction
+String lastTurnDirection = "";  // Store the last turn direction to decide the next turn if sharp uis detected
+bool isTurning = false;         // Flag to show if the robot is turning or not
+bool wallDetected = false;      // Flag to show if the robot has detcted a wall with the ultrasonic sensor
 
 
 #define IR_1 4
@@ -28,8 +30,18 @@ bool wallDetected = false;        // Flag to show if the robot has detcted a wal
 #define MOTOR_PIN3 6
 #define MOTOR_PIN4 9
 
-unsigned long colorSensorMillis = 0;     //Timer to track the last report of the color sensors
-unsigned long irSensorMillis = 0;      //Timer to track the last report of the IR sensors
+#define TRIG_PIN 10
+#define ECHO_PIN 11
+
+#define LED_R 25
+#define LED_G 26
+#define LED_B 27
+
+long currentDistance = 0;
+unsigned long currentMillis = 0;
+
+unsigned long colorSensorMillis = 0;  //Timer to track the last report of the color sensors
+unsigned long irSensorMillis = 0;     //Timer to track the last report of the IR sensors
 
 void setup() {
   //Setup Infrared Pins
@@ -44,19 +56,31 @@ void setup() {
   pinMode(MOTOR_PIN3, OUTPUT);
   pinMode(MOTOR_PIN4, OUTPUT);
 
+  // Setup onboard RBG LED pins
+  WiFiDrv::pinMode(LED_R, OUTPUT);  //define GREEN LED
+  WiFiDrv::pinMode(LED_G, OUTPUT);  //define RED LED
+  WiFiDrv::pinMode(LED_B, OUTPUT);  //define BLUE LED
+
+  WiFiDrv::analogWrite(25, 255);  //GREEN
+  WiFiDrv::analogWrite(26, 255);  //RED
+  WiFiDrv::analogWrite(27, 255);  //BLUE
 }
 
 void loop() {
+
+  //Run robot logic
+  robotLogic();
+
   // Get the current run time in milliseconds
-  unsigned long currentMillis = millis();
+  currentMillis = millis();
 
   //Check the states of the IR sensors every 500ms
-  if (currentMillis - irSensorMillis >= 500)  {
+  if (currentMillis - irSensorMillis >= 500) {
     irSensorMillis = currentMillis;
     readInfrared();
   }
-  
-  //Read the color sensor    
+
+  //Read the color sensor
   if (currentMillis - colorSensorMillis >= 250) {
     colorSensorMillis = currentMillis;
     readColorSensor();
@@ -70,9 +94,7 @@ void loop() {
   // motorControl(0, 0);  //Stop momentarily
   // delay(100);
   // motorControl(255, -255);  //Turn to the right;
-  // delay(500); 
+  // delay(500);
   // motorControl(0, 0);   //Stop momentarily
   // delay(100);
-
 }
-
