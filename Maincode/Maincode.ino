@@ -1,7 +1,6 @@
 #include <tcs3200.h>
 #include <WiFiNINA.h>
 
-
 // State Logic
 String currentState = "Null";
 String oldCurrentState = "Null";
@@ -37,11 +36,14 @@ bool wallDetected = false;      // Flag to show if the robot has detcted a wall 
 #define LED_G 26
 #define LED_B 27
 
-long currentDistance = 0;
+
+
+long currentDistance = 1000;
 unsigned long currentMillis = 0;
 
 unsigned long colorSensorMillis = 0;  //Timer to track the last report of the color sensors
 unsigned long irSensorMillis = 0;     //Timer to track the last report of the IR sensors
+unsigned long ultraMillis = 0;
 
 void setup() {
   //Setup Infrared Pins
@@ -64,6 +66,7 @@ void setup() {
   WiFiDrv::analogWrite(25, 255);  //GREEN
   WiFiDrv::analogWrite(26, 255);  //RED
   WiFiDrv::analogWrite(27, 255);  //BLUE
+
 }
 
 void loop() {
@@ -85,6 +88,14 @@ void loop() {
     colorSensorMillis = currentMillis;
     readColorSensor();
   }
+
+  //Read the color sensor
+  if (currentMillis - ultraMillis >= 20) {
+    ultraMillis = currentMillis;
+    readUltrasonicSensor();
+  }
+
+ 
 
   //Test motor control by creating a routine that moves
   //The robot forward for 1 second and then turns 90 degrees right.
